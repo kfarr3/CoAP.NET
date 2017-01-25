@@ -47,6 +47,12 @@ namespace CoAP.Net
         /// <inheritdoc/>
         public event EventHandler<MessageEventArgs<EmptyMessage>> ReceivingEmptyMessage;
 
+        public event EventHandler<DTLS.PSKEventArgs> FindKey
+        {
+            add { _channel.FindKey += value; }
+            remove { _channel.FindKey -= value; }
+        }
+
         /// <summary>
         /// Instantiates a new endpoint.
         /// </summary>
@@ -74,6 +80,10 @@ namespace CoAP.Net
         /// </summary>
         public CoAPEndPoint(System.Net.EndPoint localEP)
             : this(localEP, CoapConfig.Default)
+        { }
+
+        public CoAPEndPoint(bool securedServer)
+            : this(new DTLSServerChannel(), CoapConfig.Default)
         { }
 
         /// <summary>

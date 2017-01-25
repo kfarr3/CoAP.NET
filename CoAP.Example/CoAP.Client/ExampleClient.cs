@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using CoAP.Util;
+using DTLS;
 
 #if DNX451
 using Common.Logging;
@@ -29,6 +30,10 @@ namespace CoAP.Examples
 	// .NET 2, .NET 4 entry point
 	class ExampleClient
     {
+        static string SecureIdentity = "192.168.21.220";
+        static byte[] SecureKey = new byte[] { 0x7C, 0xCD, 0xE1, 0x4A, 0x5C, 0xF3, 0xB7, 0x1C, 0x0C, 0x08, 0xC8, 0xB7, 0xF9, 0xE5 };
+        static TCipherSuite SecureCipher = TCipherSuite.TLS_PSK_WITH_AES_128_CCM_8;
+
         public static void Main(String[] args)
         {
             String method = null;
@@ -84,7 +89,11 @@ namespace CoAP.Examples
             if (method == null || uri == null)
                 PrintUsage();
 
-            Request request = NewRequest(method);
+            Request request;
+
+            if (uri.Scheme=="coaps") request = NewRequest(method, true);
+            else request = NewRequest(method, false);
+
             if (request == null)
             {
                 Console.WriteLine("Unknown method: " + method);
@@ -188,20 +197,24 @@ namespace CoAP.Examples
             }
         }
 
-        private static Request NewRequest(String method)
+        private static Request NewRequest(String method, bool Secure)
         {
             switch (method)
             {
                 case "POST":
-                    return Request.NewPost();
+                    if (Secure) return new Request(Method.POST, SecureIdentity, SecureKey, SecureCipher);
+                    else return new Request(Method.POST);
                 case "PUT":
-                    return Request.NewPut();
+                    if (Secure) return new Request(Method.PUT, SecureIdentity, SecureKey, SecureCipher);
+                    else return new Request(Method.PUT);
                 case "DELETE":
-                    return Request.NewDelete();
+                    if (Secure) return new Request(Method.DELETE, SecureIdentity, SecureKey, SecureCipher);
+                    else return new Request(Method.DELETE);
                 case "GET":
                 case "DISCOVER":
                 case "OBSERVE":
-                    return Request.NewGet();
+                    if (Secure) return new Request(Method.GET, SecureIdentity, SecureKey, SecureCipher);
+                    else return new Request(Method.GET);
                 default:
                     return null;
             }

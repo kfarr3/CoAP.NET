@@ -58,6 +58,16 @@ namespace CoAP
         /// <summary>
         /// Initializes a request message.
         /// </summary>
+        public Request(Method method, string SecureIdentity, byte[] SecureKey, DTLS.TCipherSuite SecureCipher)
+            : this(method, true)
+        {
+            this.EndPoint = new CoAP.Net.CoAPEndPoint(new CoAP.Channel.DTLSClientChannel(SecureIdentity, SecureKey, SecureCipher), CoAP.CoapConfig.Default);
+            this.EndPoint.Start();
+        }
+
+        /// <summary>
+        /// Initializes a request message.
+        /// </summary>
         /// <param name="method">The method code of the message</param>
         /// <param name="confirmable">True if the request is Confirmable</param>
         public Request(Method method, Boolean confirmable)

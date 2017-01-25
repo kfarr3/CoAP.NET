@@ -38,6 +38,7 @@ namespace CoAP.Channel
 
         /// <inheritdoc/>
         public event EventHandler<DataReceivedEventArgs> DataReceived;
+        public event EventHandler<DTLS.PSKEventArgs> FindKey;
 
         /// <summary>
         /// Initializes a UDP channel with a random port.

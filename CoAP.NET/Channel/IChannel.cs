@@ -27,6 +27,10 @@ namespace CoAP.Channel
         /// </summary>
         event EventHandler<DataReceivedEventArgs> DataReceived;
         /// <summary>
+        /// Occurs when some an encrypted channel needs a key.
+        /// </summary>
+        event EventHandler<DTLS.PSKEventArgs> FindKey;
+        /// <summary>
         /// Starts this channel.
         /// </summary>
         void Start();
